@@ -10,6 +10,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
+    "prebuild": "electron-forge package && rm -rf ./out ./dist",
+    "build": "electron-builder",
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
