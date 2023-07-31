@@ -3,11 +3,17 @@ const messages = {
   en: {
     message: {
       hello: "hello world",
+      about: {
+        version: "Node: {node}, Chrome:{chrome}",
+      },
     },
   },
   zh_CN: {
     message: {
       hello: "你好，世界",
+      about: {
+        version: "Node版本: {node}, Chrome:{chrome}",
+      },
     },
   },
 };

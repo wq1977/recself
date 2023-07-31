@@ -2,6 +2,7 @@
   "name": "elmas",
   "productName": "elmas",
   "version": "1.0.0",
+  "url": "https://apps.wqiang.fun/kalafun",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "scripts": {
@@ -26,6 +27,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
     "@electron-forge/plugin-vite": "^6.2.1",
     "@vitejs/plugin-vue": "^4.2.3",
+    "@vueuse/core": "^10.3.0",
     "electron": "24.6.0",
     "electron-builder": "22.14.13",
     "vue": "^3.3.4",

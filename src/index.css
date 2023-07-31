@@ -5,3 +5,8 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+.dark {
+  background: #16171d;
+  color: #fff;
+}
