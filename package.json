@@ -31,10 +31,10 @@
     "electron": "24.6.0",
     "electron-builder": "22.14.13",
     "vue": "^3.3.4",
+    "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.4"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "vue-i18n": "^9.2.2"
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
