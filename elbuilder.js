@@ -11,6 +11,7 @@ module.exports = {
     appId: app.appId,
     category: app.category,
     icon: app.icon,
+    files: ["**/*", "!src"],
     entitlements: "build/entitlements.mas.plist",
     entitlementsInherit: "build/entitlements.mas.inherit.plist",
     target: isDev ? "mas-dev" : "mas",
