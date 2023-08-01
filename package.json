@@ -2,8 +2,8 @@
   "name": "elmas",
   "productName": "elmas",
   "version": "1.0.0",
-  "url": "https://apps.wqiang.fun/kalafun",
-  "description": "My Electron application description",
+  "url": "put your app's url here",
+  "description": "put your app description here",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
