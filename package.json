@@ -1,9 +1,11 @@
 {
   "name": "elmas",
   "productName": "elmas",
+  "appId": "fun.wqiang.elmas",
   "version": "1.0.0",
   "url": "put your app's url here",
   "description": "put your app description here",
+  "copyright": "Copyright © 2023 Qiang Wang",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",

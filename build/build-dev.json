@@ -1,11 +1,7 @@
 {
-  "appId": "fun.wqiang.kalafun",
-  "productName": "KalaFun",
-  "copyright": "Copyright © 2023 Qiang Wang",
   "mac": {
     "target": "mas-dev",
     "type": "development",
-    "identity": "",
     "category": "public.app-category.utilities",
     "icon": "build/icon.icns",
     "timestamp": "none",
