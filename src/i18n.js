@@ -2,6 +2,8 @@ import { createI18n } from "vue-i18n/dist/vue-i18n.cjs";
 const messages = {
   en: {
     message: {
+      darkmode: "Dark",
+      lightmode: "Light",
       hello: "hello world",
       about: {
         version: "Node: {node}, Chrome:{chrome}",
@@ -10,6 +12,8 @@ const messages = {
   },
   zh_CN: {
     message: {
+      darkmode: "暗色模式",
+      lightmode: "亮色模式",
       hello: "你好，世界",
       about: {
         version: "Node版本: {node}, Chrome:{chrome}",
