@@ -1,11 +1,13 @@
 {
   "name": "elmas",
   "productName": "elmas",
-  "appId": "fun.wqiang.elmas",
   "version": "1.0.0",
+  "appId": "fun.wqiang.elmas",
   "url": "put your app's url here",
   "description": "put your app description here",
   "copyright": "Copyright © 2023 Qiang Wang",
+  "category": "public.app-category.utilities",
+  "icon": "build/icon.icns",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -13,14 +15,10 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "prebuild": "electron-forge package && rm -rf ./out ./dist",
-    "build": "electron-builder",
+    "build": "electron-builder --config ./elbuilder.js",
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": {
-    "name": "wesley",
-    "email": "9610848@qq.com"
-  },
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.2.1",
