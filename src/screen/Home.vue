@@ -1,16 +1,42 @@
 <script setup>
-import { h, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { canvasRGB } from "stackblur-canvas";
+
+function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
+    const distance = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+
+    const lineVector = { x: x2 - x1, y: y2 - y1 };
+    const pointVector = { x: x - x1, y: y - y1 };
+    const dotProduct = lineVector.x * pointVector.y - lineVector.y * pointVector.x;
+
+    const side = dotProduct > 0;
+
+    return { distance, side };
+}
+
+function isPointInsideEllipse(x, y, a, b, cx, cy) {
+    let equation = (x - cx) ** 2 / a ** 2 + (y - cy) ** 2 / b ** 2;
+    if (equation <= 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function setupVideoLayer() {
     navigator.getUserMedia({ video: true, audio: false }, function (stream) {
         var bgvideo = document.getElementById('bgvideo');
         const videoTrack = stream.getVideoTracks()[0];
         const { width, height } = videoTrack.getSettings();
-        const LENGTH = 100
-        const STARTX = Math.round(width * 3 / 4 - LENGTH / 2)
         const bgcanvas = new OffscreenCanvas(width, height);
         const bgctx = bgcanvas.getContext("2d");
+        const x0 = width - 200
+        const y0 = 0
+        const LENGTH = 50
+        const boundLeft = x0 - LENGTH
+        const boundTop = y0 - LENGTH
+        const boundWidth = width - boundLeft
+        const boundHeight = height - boundTop
 
         const fgcanvas = new OffscreenCanvas(width, height);
         const fgctx = fgcanvas.getContext("2d");
@@ -19,22 +45,35 @@ function setupVideoLayer() {
 
         async function bgframe(bitmap, timestamp) {
             bgctx.drawImage(bitmap, 0, 0, width, height);
-            let imageData = bgctx.getImageData(STARTX, 0, LENGTH, height);
+            let imageData = bgctx.getImageData(boundLeft, boundTop, boundWidth, boundHeight);
             for (let i = 0; i < imageData.data.length; i += 4) {
-                const x = Math.ceil((i / 4) % LENGTH);
-                imageData.data[i + 0] *= (x / (LENGTH - 1));
-                imageData.data[i + 1] *= (x / (LENGTH - 1));
-                imageData.data[i + 2] *= (x / (LENGTH - 1));
-                imageData.data[i + 3] = 0x80 + (0xFF - 0x80) * x / (LENGTH - 1);
+                const x = Math.floor((i / 4) % boundWidth);
+                const y = Math.floor((i / 4) / boundWidth);
+                const { distance, side } = calculateDistanceAndSide(x, y, LENGTH, boundHeight, boundWidth, LENGTH)
+                if (!side) {
+                    if (distance <= LENGTH) {
+                        const rate = (LENGTH - distance) / LENGTH
+                        imageData.data[i + 0] *= rate;
+                        imageData.data[i + 1] *= rate;
+                        imageData.data[i + 2] *= rate;
+                        imageData.data[i + 3] = 0x80 + (0xFF - 0x80) * rate;
+                    } else {
+                        imageData.data[i + 0] = 0;
+                        imageData.data[i + 1] = 0;
+                        imageData.data[i + 2] = 0;
+                        imageData.data[i + 3] = 0x80;
+                    }
+                } else {
+                    //保留原来的图片
+                }
             }
-            fgctx.putImageData(imageData, STARTX, 0)
-            fgctx.drawImage(bitmap, STARTX + LENGTH, 0, width - STARTX - LENGTH, height, STARTX + LENGTH, 0, width - STARTX - LENGTH, height)
+            fgctx.putImageData(imageData, boundLeft, boundTop)
+            imageData = null
+            bitmap.close();
             canvasRGB(
-                bgcanvas, 0, 0, width, height, 10
+                bgcanvas, 0, 0, width, height, 20
             )
             bgctx.drawImage(fgcanvas, 0, 0, width, height)
-            bitmap.close();
-            imageData = null
             const newBitmap = await createImageBitmap(bgcanvas);
             return new VideoFrame(newBitmap, { timestamp });
         }
