@@ -1,5 +1,6 @@
 import api from "./be/api";
 import { setMenu } from "./be/menu";
+import settings from "./setting.json";
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
@@ -16,10 +17,11 @@ const createWindow = () => {
   // Create the browser window.
   setMenu();
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: settings.size.width + 2,
+    height: settings.size.height + 2 + 28,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      experimentalFeatures: true,
     },
   });
 
