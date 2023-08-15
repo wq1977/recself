@@ -19,7 +19,7 @@ function setupVideoLayer() {
 
         async function bgframe(bitmap, timestamp) {
             bgctx.drawImage(bitmap, 0, 0, width, height);
-            const imageData = bgctx.getImageData(STARTX, 0, LENGTH, height);
+            let imageData = bgctx.getImageData(STARTX, 0, LENGTH, height);
             for (let i = 0; i < imageData.data.length; i += 4) {
                 const x = Math.ceil((i / 4) % LENGTH);
                 imageData.data[i + 0] *= (x / (LENGTH - 1));
@@ -34,6 +34,7 @@ function setupVideoLayer() {
             )
             bgctx.drawImage(fgcanvas, 0, 0, width, height)
             bitmap.close();
+            imageData = null
             const newBitmap = await createImageBitmap(bgcanvas);
             return new VideoFrame(newBitmap, { timestamp });
         }
