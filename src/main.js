@@ -33,11 +33,17 @@ function walk(directoryPath, indent = 0, result = []) {
   });
   return result;
 }
-const rootDir = process.argv[2] || path.resolve(".");
+const rootDir = process.argv[1] || path.resolve(".");
+let dirtyTime
 const updateFiles = () => {
-  if (!mainWindow) return;
-  const result = walk(rootDir);
-  mainWindow.webContents.send("files", result);
+  dirtyTime = new Date().getTime()
+  setTimeout(() => {
+    if (new Date().getTime() - dirtyTime > 800) {
+      if (!mainWindow) return;
+      const result = walk(rootDir);
+      mainWindow.webContents.send("files", result);    
+    }
+  }, 1000);
 };
 const w = chokidar.watch(rootDir, { persistent: true });
 w.on("ready", () => {

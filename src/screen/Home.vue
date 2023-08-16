@@ -74,7 +74,7 @@ function setupVideoLayer() {
             imageData = null
             bitmap.close();
             canvasRGB(
-                bgcanvas, 0, 0, width, height, 20
+                bgcanvas, 0, 0, width, height, 10
             )
             bgctx.drawImage(fgcanvas, 0, 0, width, height)
             const newBitmap = await createImageBitmap(bgcanvas);
