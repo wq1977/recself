@@ -40,8 +40,12 @@ const updateFiles = () => {
   setTimeout(() => {
     if (new Date().getTime() - dirtyTime > 800) {
       if (!mainWindow) return;
-      const result = walk(rootDir);
-      mainWindow.webContents.send("files", result);    
+      try {
+        const result = walk(rootDir);
+        mainWindow.webContents.send("files", result);      
+      } catch (err) {
+        setTimeout(updateFiles, 3000);
+      }
     }
   }, 1000);
 };

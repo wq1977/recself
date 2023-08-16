@@ -190,10 +190,15 @@ video {
     font-weight: 500;
     font-size: 22px;
     font-family: 'courier-new', courier, monospace;
+    --row-hover-background: #000000E0 !important;
 }
 
-.filelist {
-    --row-hover-background: #000000E0 !important;
+.tree-list {
+    row-gap: 0 !important;
+}
+
+span.tree-row-txt {
+    white-space: nowrap;
 }
 
 .my-editor {
