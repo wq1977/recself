@@ -14,6 +14,7 @@ let mainWindow;
 const fs = require("fs");
 
 function walk(directoryPath, indent = 0, result = []) {
+  if (directoryPath.endsWith('node_modules')) return;
   const files = fs.readdirSync(directoryPath);
   files.forEach((file) => {
     const filePath = path.join(directoryPath, file);
@@ -49,7 +50,7 @@ const updateFiles = () => {
     }
   }, 1000);
 };
-const w = chokidar.watch(rootDir, { persistent: true });
+const w = chokidar.watch(rootDir, {ignored: /node_modules/, persistent: true });
 w.on("ready", () => {
   setTimeout(() => {
     w.on("add", updateFiles);
