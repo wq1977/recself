@@ -114,41 +114,14 @@ function setupVideoLayer() {
 }
 
 const code = ref('console.log("Hello World")')
-const list = ref([
-    {
-        id: 1,
-        label: "Animal",
-        nodes: [
-            {
-                id: 2,
-                label: "Dog",
-            },
-            {
-                id: 3,
-                label: "Cat",
-                nodes: [
-                    {
-                        id: 4,
-                        label: "Egyptian Mau Cat",
-                    },
-                    {
-                        id: 5,
-                        label: "Japanese Bobtail Cat",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: 6,
-        label: "People",
-    },
-])
+let list = ref([])
 function highlighter(code) {
     return highlight(code, languages.js);
 }
 
-onMounted(() => {
+onMounted(async () => {
+    list.value = await api.call('listDir')
+    console.log(list.value)
     setupVideoLayer()
 })
 </script>
@@ -156,7 +129,7 @@ onMounted(() => {
     <video id="bgvideo"></video>
     <splitpanes class="default-theme mysplitpanes">
         <pane size="20">
-            <Tree class="filelist" :nodes="list" :use-checkbox="true" :use-icon="false" show-child-count />
+            <Tree class="filelist" :nodes="list" :use-checkbox="false" :use-icon="true" />
         </pane>
         <pane>
             <splitpanes horizontal class="mysplitpanes">
