@@ -1,7 +1,7 @@
 import api from "./be/api";
 import { setMenu } from "./be/menu";
 import settings from "./setting.json";
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
 const pty = require("node-pty");
 const chokidar = require("chokidar");
@@ -65,10 +65,12 @@ if (require("electron-squirrel-startup")) {
 
 const createWindow = () => {
   // Create the browser window.
-  setMenu();
+  // setMenu();
   mainWindow = new BrowserWindow({
     width: settings.size.width + 2,
     height: settings.size.height + 2 + 28,
+    frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       experimentalFeatures: true,
@@ -83,6 +85,9 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
+
+  mainWindow.setMenu(null)
+  mainWindow.setMenuBarVisibility(false)
 
   const ptyProcess = pty.spawn(shell, [], {
     name: "xterm-color",
