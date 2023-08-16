@@ -48,6 +48,9 @@ w.on("ready", () => {
     w.on("unlinkDir", updateFiles);
   }, 3000);
 });
+ipcMain.on("refresh", () => {
+  updateFiles();
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {

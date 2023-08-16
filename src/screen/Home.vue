@@ -131,9 +131,12 @@ onMounted(async () => {
     api.on('files', "tree", (l) => {
         list.value = l
     })
+    api.send('refresh')
     console.log(list.value)
     setupVideoLayer()
-    const term = new Terminal()
+    const term = new Terminal({
+        fontSize: 22
+    })
     term.open(document.getElementById('terminal'))
     api.on('from-term', "term", (d) => {
         term.write(d)
@@ -146,8 +149,9 @@ onMounted(async () => {
 <template>
     <video id="bgvideo"></video>
     <splitpanes class="default-theme mysplitpanes">
-        <pane size="20">
-            <Tree class="filelist" :nodes="list" :use-checkbox="false" :use-icon="true" @nodeClick="onNodeClick" />
+        <pane size="20" style="overflow-y: auto;">
+            <Tree class="filelist" :nodes="list" rowHoverBackground="#00000080" :use-checkbox="false" :use-icon="true"
+                @nodeClick="onNodeClick" />
         </pane>
         <pane>
             <splitpanes horizontal class="mysplitpanes">
@@ -175,14 +179,25 @@ video {
     background-color: #00000000 !important;
 }
 
+.xterm-rows {
+    color: #FFFFFFE0 !important;
+}
+
 .filelist {
-    color: white;
+    color: #FFFFFFC0;
+    font-weight: 500;
+    font-size: 22px;
+    font-family: 'courier-new', courier, monospace;
+}
+
+.filelist {
+    --row-hover-background: #000000E0 !important;
 }
 
 .my-editor {
     color: #fff;
     font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-    font-size: 14px;
+    font-size: 22px;
     line-height: 1.5;
     padding: 5px;
 }
