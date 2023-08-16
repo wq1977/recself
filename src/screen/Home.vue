@@ -218,4 +218,8 @@ video {
     background: #00000080 !important;
     border: 0 !important;
 }
+
+.mysplitpanes .splitpanes--horizontal .splitpanes__splitter{
+    background: linear-gradient(to right, #00000080, #00000000 70%) !important;
+}
 </style>
