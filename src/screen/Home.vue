@@ -7,6 +7,8 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
 
 function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
     const distance = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
@@ -120,9 +122,23 @@ onMounted(() => {
 </script>
 <template>
     <video id="bgvideo"></video>
-    <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
+    <splitpanes class="default-theme mysplitpanes">
+        <pane size="20">
+            <span>1</span>
+        </pane>
+        <pane>
+            <splitpanes horizontal class="mysplitpanes">
+                <pane>
+                    <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
+                </pane>
+                <pane :size="15">
+                    <span>3</span>
+                </pane>
+            </splitpanes>
+        </pane>
+    </splitpanes>
 </template>
-<style scoped>
+<style>
 video {
     width: 100%;
     height: 100%;
@@ -140,8 +156,18 @@ video {
     padding: 5px;
 }
 
+.prism-editor__line-number {
+    position: relative !important;
+    color: yellow !important;
+}
+
 /* optional class for removing the outline */
 .prism-editor__textarea:focus {
     outline: none;
+}
+
+.mysplitpanes>.splitpanes__splitter {
+    background: #00000080 !important;
+    border: 0 !important;
 }
 </style>
