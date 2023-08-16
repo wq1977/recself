@@ -43,7 +43,7 @@ function setupVideoLayer() {
 
         const fgcanvas = new OffscreenCanvas(width, height);
         const fgctx = fgcanvas.getContext("2d");
-        fgctx.fillStyle = '#00000080'
+        fgctx.fillStyle = '#000000C0'
         fgctx.fillRect(0, 0, width, height)
 
         async function bgframe(bitmap, timestamp) {
@@ -59,12 +59,12 @@ function setupVideoLayer() {
                         imageData.data[i + 0] *= rate;
                         imageData.data[i + 1] *= rate;
                         imageData.data[i + 2] *= rate;
-                        imageData.data[i + 3] = 0x80 + (0xFF - 0x80) * rate;
+                        imageData.data[i + 3] = 0xC0 + (0xFF - 0xC0) * rate;
                     } else {
                         imageData.data[i + 0] = 0;
                         imageData.data[i + 1] = 0;
                         imageData.data[i + 2] = 0;
-                        imageData.data[i + 3] = 0x80;
+                        imageData.data[i + 3] = 0xC0;
                     }
                 } else {
                     //保留原来的图片
@@ -160,7 +160,7 @@ onMounted(async () => {
                 <pane>
                     <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
                 </pane>
-                <pane :size="25" style="overflow-y: auto;">
+                <pane :size="25" style="overflow-y: auto; padding: 1em;">
                     <div id="terminal"></div>
                 </pane>
             </splitpanes>
@@ -220,11 +220,17 @@ span.tree-row-txt {
 }
 
 .mysplitpanes>.splitpanes__splitter {
-    background: #00000080 !important;
+    background: #00000030 !important;
     border: 0 !important;
 }
 
 .mysplitpanes .splitpanes--horizontal .splitpanes__splitter{
-    background: linear-gradient(to right, #00000080, #00000000 70%) !important;
+    height: 2px !important;
+    background: linear-gradient(to right, #00000030, #00000000 70%) !important;
 }
+
+.splitpanes--vertical > .splitpanes__splitter{
+    width: 2px !important;
+}
+
 </style>
