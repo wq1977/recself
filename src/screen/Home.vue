@@ -27,15 +27,16 @@ function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
 }
 
 function setupVideoLayer() {
-    navigator.getUserMedia({ video: true, audio: false }, function (stream) {
+    navigator.getUserMedia({ video: {width:{ideal:1280}}, audio: false }, function (stream) {
         var bgvideo = document.getElementById('bgvideo');
         const videoTrack = stream.getVideoTracks()[0];
         const { width, height } = videoTrack.getSettings();
+        console.log('track', width, height)
         const bgcanvas = new OffscreenCanvas(width, height);
         const bgctx = bgcanvas.getContext("2d");
-        const x0 = width - 200
-        const y0 = -100
-        const LENGTH = 50
+        const x0 = width - 400
+        const y0 = -2000
+        const LENGTH = 100
         const boundLeft = x0 - LENGTH
         const boundTop = y0 - LENGTH
         const boundWidth = width - boundLeft
@@ -43,7 +44,7 @@ function setupVideoLayer() {
 
         const fgcanvas = new OffscreenCanvas(width, height);
         const fgctx = fgcanvas.getContext("2d");
-        fgctx.fillStyle = '#000000C0'
+        fgctx.fillStyle = '#000000A0'
         fgctx.fillRect(0, 0, width, height)
 
         async function bgframe(bitmap, timestamp) {
@@ -59,12 +60,12 @@ function setupVideoLayer() {
                         imageData.data[i + 0] *= rate;
                         imageData.data[i + 1] *= rate;
                         imageData.data[i + 2] *= rate;
-                        imageData.data[i + 3] = 0xC0 + (0xFF - 0xC0) * rate;
+                        imageData.data[i + 3] = 0xA0 + (0xFF - 0xA0) * rate;
                     } else {
                         imageData.data[i + 0] = 0;
                         imageData.data[i + 1] = 0;
                         imageData.data[i + 2] = 0;
-                        imageData.data[i + 3] = 0xC0;
+                        imageData.data[i + 3] = 0xA0;
                     }
                 } else {
                     //保留原来的图片
@@ -149,25 +150,32 @@ onMounted(async () => {
 })
 </script>
 <template>
-    <video id="bgvideo"></video>
-    <splitpanes class="default-theme mysplitpanes">
-        <pane size="20" style="overflow-y: auto;">
-            <Tree class="filelist" :nodes="list" rowHoverBackground="#00000080" :use-checkbox="false" :use-icon="true"
-                @nodeClick="onNodeClick" />
-        </pane>
-        <pane>
-            <splitpanes horizontal class="mysplitpanes">
-                <pane>
-                    <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
-                </pane>
-                <pane :size="25" style="overflow-y: auto; padding: 1em;">
-                    <div id="terminal"></div>
-                </pane>
-            </splitpanes>
-        </pane>
-    </splitpanes>
+    <div class="root">
+        <video id="bgvideo"></video>
+        <splitpanes class="default-theme mysplitpanes">
+            <pane size="20" style="overflow-y: auto;">
+                <Tree class="filelist" :nodes="list" rowHoverBackground="#00000080" :use-checkbox="false" :use-icon="true"
+                    @nodeClick="onNodeClick" />
+            </pane>
+            <pane>
+                <splitpanes horizontal class="mysplitpanes">
+                    <pane>
+                        <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
+                    </pane>
+                    <pane :size="25" style="overflow-y: auto; padding: 1em;">
+                        <div id="terminal"></div>
+                    </pane>
+                </splitpanes>
+            </pane>
+        </splitpanes>
+    </div>
 </template>
 <style>
+.root{
+    position: relative;
+    height: 99vh !important;
+    width: 176vh !important;
+}
 video {
     width: 100%;
     height: 100%;
@@ -220,13 +228,13 @@ span.tree-row-txt {
 }
 
 .mysplitpanes>.splitpanes__splitter {
-    background: #00000030 !important;
+    background: #FFFFFF30 !important;
     border: 0 !important;
 }
 
 .mysplitpanes .splitpanes--horizontal .splitpanes__splitter{
     height: 2px !important;
-    background: linear-gradient(to right, #00000030, #00000000 70%) !important;
+    background: linear-gradient(to right, #FFFFFF30, #00000000 70%) !important;
 }
 
 .splitpanes--vertical > .splitpanes__splitter{
