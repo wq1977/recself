@@ -1,6 +1,12 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { canvasRGB } from "stackblur-canvas";
+import { PrismEditor } from 'vue-prism-editor';
+import 'vue-prism-editor/dist/prismeditor.min.css';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
 
 function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
     const distance = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
@@ -14,15 +20,6 @@ function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
     return { distance, side };
 }
 
-function isPointInsideEllipse(x, y, a, b, cx, cy) {
-    let equation = (x - cx) ** 2 / a ** 2 + (y - cy) ** 2 / b ** 2;
-    if (equation <= 1) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function setupVideoLayer() {
     navigator.getUserMedia({ video: true, audio: false }, function (stream) {
         var bgvideo = document.getElementById('bgvideo');
@@ -31,7 +28,7 @@ function setupVideoLayer() {
         const bgcanvas = new OffscreenCanvas(width, height);
         const bgctx = bgcanvas.getContext("2d");
         const x0 = width - 200
-        const y0 = 0
+        const y0 = -100
         const LENGTH = 50
         const boundLeft = x0 - LENGTH
         const boundTop = y0 - LENGTH
@@ -112,13 +109,18 @@ function setupVideoLayer() {
     }, console.log);
 }
 
+const code = ref('console.log("Hello World")')
+function highlighter(code) {
+    return highlight(code, languages.js);
+}
+
 onMounted(() => {
     setupVideoLayer()
 })
 </script>
 <template>
     <video id="bgvideo"></video>
-    <video id="fgvideo"></video>
+    <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
 </template>
 <style scoped>
 video {
@@ -128,5 +130,18 @@ video {
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.my-editor {
+    color: #fff;
+    font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px;
+}
+
+/* optional class for removing the outline */
+.prism-editor__textarea:focus {
+    outline: none;
 }
 </style>
