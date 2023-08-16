@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { canvasRGB } from "stackblur-canvas";
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -115,7 +115,10 @@ function setupVideoLayer() {
     }, console.log);
 }
 
-const code = ref('console.log("Hello World")')
+const code = ref('')
+watch(code, () => {
+    api.call('save', code.value)
+})
 let list = ref([])
 function highlighter(code) {
     return highlight(code, languages.js);
@@ -132,7 +135,6 @@ onMounted(async () => {
         list.value = l
     })
     api.send('refresh')
-    console.log(list.value)
     setupVideoLayer()
     const term = new Terminal({
         fontSize: 22
