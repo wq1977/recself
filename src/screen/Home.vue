@@ -128,7 +128,9 @@ const onNodeClick = async (node) => {
 };
 
 onMounted(async () => {
-    list.value = await api.call('listDir')
+    api.on('files', "tree", (l) => {
+        list.value = l
+    })
     console.log(list.value)
     setupVideoLayer()
     const term = new Terminal()
