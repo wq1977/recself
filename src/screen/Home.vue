@@ -9,6 +9,8 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+import Tree from "vue3-tree";
+import "vue3-tree/dist/style.css";
 
 function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
     const distance = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
@@ -112,6 +114,36 @@ function setupVideoLayer() {
 }
 
 const code = ref('console.log("Hello World")')
+const list = ref([
+    {
+        id: 1,
+        label: "Animal",
+        nodes: [
+            {
+                id: 2,
+                label: "Dog",
+            },
+            {
+                id: 3,
+                label: "Cat",
+                nodes: [
+                    {
+                        id: 4,
+                        label: "Egyptian Mau Cat",
+                    },
+                    {
+                        id: 5,
+                        label: "Japanese Bobtail Cat",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: 6,
+        label: "People",
+    },
+])
 function highlighter(code) {
     return highlight(code, languages.js);
 }
@@ -124,14 +156,14 @@ onMounted(() => {
     <video id="bgvideo"></video>
     <splitpanes class="default-theme mysplitpanes">
         <pane size="20">
-            <span>1</span>
+            <Tree class="filelist" :nodes="list" :use-checkbox="true" :use-icon="false" show-child-count />
         </pane>
         <pane>
             <splitpanes horizontal class="mysplitpanes">
                 <pane>
                     <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
                 </pane>
-                <pane :size="15">
+                <pane :size="25">
                     <span>3</span>
                 </pane>
             </splitpanes>
@@ -146,6 +178,10 @@ video {
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.filelist {
+    color: white;
 }
 
 .my-editor {
