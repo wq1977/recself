@@ -11,6 +11,8 @@ import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import Tree from "vue3-tree";
 import "vue3-tree/dist/style.css";
+import { Terminal } from 'xterm'
+import "xterm/css/xterm.css"
 
 function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
     const distance = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
@@ -129,6 +131,14 @@ onMounted(async () => {
     list.value = await api.call('listDir')
     console.log(list.value)
     setupVideoLayer()
+    const term = new Terminal()
+    term.open(document.getElementById('terminal'))
+    api.on('from-term', "term", (d) => {
+        term.write(d)
+    })
+    term.onData(e => {
+        api.send("to-term", e)
+    })
 })
 </script>
 <template>
@@ -142,8 +152,8 @@ onMounted(async () => {
                 <pane>
                     <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
                 </pane>
-                <pane :size="25">
-                    <span>3</span>
+                <pane :size="25" style="overflow-y: auto;">
+                    <div id="terminal"></div>
                 </pane>
             </splitpanes>
         </pane>
@@ -157,6 +167,10 @@ video {
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.xterm .xterm-viewport {
+    background-color: #00000000 !important;
 }
 
 .filelist {

@@ -3,6 +3,9 @@ import { setMenu } from "./be/menu";
 import settings from "./setting.json";
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const os = require("os");
+const pty = require("node-pty");
+const shell = "bash";
 
 Object.keys(api).forEach((name) => {
   ipcMain.handle(name, api[name]);
@@ -33,6 +36,22 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
+
+  const ptyProcess = pty.spawn(shell, [], {
+    name: "xterm-color",
+    cols: 80,
+    rows: 24,
+    cwd: process.env.HOME,
+    env: process.env,
+  });
+
+  ptyProcess.on("data", function (data) {
+    mainWindow.webContents.send("from-term", data);
+  });
+
+  ipcMain.on("to-term", (e, data) => {
+    ptyProcess.write(data);
+  });
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();

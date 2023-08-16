@@ -15,9 +15,13 @@ contextBridge.exposeInMainWorld("api", {
     }
     bus[evt][key] = callback;
   },
+  send(evt, ...params) {
+    ipcRenderer.send(evt, ...params);
+  },
   off(evt, key) {
     if (bus[evt][key]) delete bus[evt][key];
   },
+
   async call(path, ...params) {
     console.log("call api with", path, ...params);
     return await ipcRenderer.invoke(path, ...params);
