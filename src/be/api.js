@@ -29,6 +29,9 @@ const api = {
     const list = walk(".");
     return list;
   },
+  async editor(event, path) {
+    return require("fs").readFileSync(path).toString();
+  },
 };
 
 export default api;

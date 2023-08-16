@@ -119,6 +119,12 @@ function highlighter(code) {
     return highlight(code, languages.js);
 }
 
+const onNodeClick = async (node) => {
+    if (!node.nodes) {
+        code.value = await api.call("editor", node.id)
+    }
+};
+
 onMounted(async () => {
     list.value = await api.call('listDir')
     console.log(list.value)
@@ -129,7 +135,7 @@ onMounted(async () => {
     <video id="bgvideo"></video>
     <splitpanes class="default-theme mysplitpanes">
         <pane size="20">
-            <Tree class="filelist" :nodes="list" :use-checkbox="false" :use-icon="true" />
+            <Tree class="filelist" :nodes="list" :use-checkbox="false" :use-icon="true" @nodeClick="onNodeClick" />
         </pane>
         <pane>
             <splitpanes horizontal class="mysplitpanes">
