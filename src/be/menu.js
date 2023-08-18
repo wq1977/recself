@@ -1,5 +1,5 @@
 import { url } from "../../package.json";
-const { app, Menu } = require("electron");
+const { app, Menu, BrowserWindow } = require("electron");
 
 const isMac = process.platform === "darwin";
 
@@ -40,6 +40,18 @@ const template = [
       { role: "reload" },
       { role: "forceReload" },
       { role: "toggleDevTools" },
+      { type: "separator" },
+      {
+        label: "Switch Preset",
+        accelerator: "Cmd+L",
+        click() {
+          let win = BrowserWindow.getFocusedWindow();
+          if (!win) {
+            return;
+          }
+          win.webContents.send("switch-preset");
+        },
+      },
       { type: "separator" },
       { role: "resetZoom" },
       { role: "zoomIn" },

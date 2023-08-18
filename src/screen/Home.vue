@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { canvasRGB } from "stackblur-canvas";
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -27,7 +27,7 @@ function calculateDistanceAndSide(x, y, x1, y1, x2, y2) {
 }
 
 function setupVideoLayer() {
-    navigator.getUserMedia({ video: {width:{ideal:1280}}, audio: false }, function (stream) {
+    navigator.getUserMedia({ video: { width: { ideal: 1280 } }, audio: false }, function (stream) {
         var bgvideo = document.getElementById('bgvideo');
         const videoTrack = stream.getVideoTracks()[0];
         const { width, height } = videoTrack.getSettings();
@@ -131,9 +131,64 @@ const onNodeClick = async (node) => {
     }
 };
 
+const preset = ref(0)
+const sizetree = computed(() => {
+    switch (preset.value) {
+        case 0: return 20;
+        case 1: return 0;
+        default: return 0;
+    }
+})
+const sizeterm = computed(() => {
+    switch (preset.value) {
+        case 0: return 30;
+        case 1: return 0;
+        default: return 70;
+    }
+})
+const mintree = computed(() => {
+    switch (preset.value) {
+        case 0: return 20;
+        case 1: return 20;
+        default: return 0;
+    }
+})
+const minterm = computed(() => {
+    switch (preset.value) {
+        case 0: return 30;
+        case 1: return 0;
+        default: return 0;
+    }
+})
+const maxtree = computed(() => {
+    switch (preset.value) {
+        case 0: return 50;
+        case 1: return 50;
+        default: return 0;
+    }
+})
+const maxterm = computed(() => {
+    switch (preset.value) {
+        case 0: return 70;
+        case 1: return 0;
+        default: return 70;
+    }
+})
+const sizecode = computed(() => {
+    switch (preset.value) {
+        case 0: return 70;
+        case 1: return 100;
+        default: return 30;
+    }
+})
+
+
 onMounted(async () => {
     api.on('files', "tree", (l) => {
         list.value = l
+    })
+    api.on('switch-preset', 'main', () => {
+        preset.value = (preset.value + 1) % 3
     })
     api.send('refresh')
     setupVideoLayer()
@@ -153,16 +208,16 @@ onMounted(async () => {
     <div class="root">
         <video id="bgvideo"></video>
         <splitpanes class="default-theme mysplitpanes">
-            <pane size="20" style="overflow-y: auto;">
+            <pane :size="sizetree" :min-size="mintree" :max-size="maxtree" style="overflow-y: auto;">
                 <Tree class="filelist" :nodes="list" rowHoverBackground="#00000080" :use-checkbox="false" :use-icon="true"
                     @nodeClick="onNodeClick" />
             </pane>
             <pane>
                 <splitpanes horizontal class="mysplitpanes">
-                    <pane>
+                    <pane :size="sizecode">
                         <prism-editor class="my-editor" v-model="code" :highlight="highlighter" line-numbers></prism-editor>
                     </pane>
-                    <pane :size="25" style="overflow-y: auto; padding: 1em;">
+                    <pane :size="sizeterm" :min-size="minterm" :max-size="maxterm" style="overflow-y: auto; padding: 1em;">
                         <div id="terminal"></div>
                     </pane>
                 </splitpanes>
@@ -171,11 +226,12 @@ onMounted(async () => {
     </div>
 </template>
 <style>
-.root{
+.root {
     position: relative;
     height: 99vh !important;
     width: 176vh !important;
 }
+
 video {
     width: 100%;
     height: 100%;
@@ -232,13 +288,12 @@ span.tree-row-txt {
     border: 0 !important;
 }
 
-.mysplitpanes .splitpanes--horizontal .splitpanes__splitter{
+.mysplitpanes .splitpanes--horizontal .splitpanes__splitter {
     height: 2px !important;
     background: linear-gradient(to right, #FFFFFF30, #00000000 70%) !important;
 }
 
-.splitpanes--vertical > .splitpanes__splitter{
+.splitpanes--vertical>.splitpanes__splitter {
     width: 2px !important;
 }
-
 </style>

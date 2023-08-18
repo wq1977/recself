@@ -14,7 +14,7 @@ let mainWindow;
 const fs = require("fs");
 
 function walk(directoryPath, indent = 0, result = []) {
-  if (directoryPath.endsWith('node_modules')) return;
+  if (directoryPath.endsWith("node_modules")) return;
   const files = fs.readdirSync(directoryPath);
   files.forEach((file) => {
     const filePath = path.join(directoryPath, file);
@@ -35,22 +35,25 @@ function walk(directoryPath, indent = 0, result = []) {
   return result;
 }
 const rootDir = process.argv[1] || path.resolve(".");
-let dirtyTime
+let dirtyTime;
 const updateFiles = () => {
-  dirtyTime = new Date().getTime()
+  dirtyTime = new Date().getTime();
   setTimeout(() => {
     if (new Date().getTime() - dirtyTime > 800) {
       if (!mainWindow) return;
       try {
         const result = walk(rootDir);
-        mainWindow.webContents.send("files", result);      
+        mainWindow.webContents.send("files", result);
       } catch (err) {
         setTimeout(updateFiles, 3000);
       }
     }
   }, 1000);
 };
-const w = chokidar.watch(rootDir, {ignored: /node_modules/, persistent: true });
+const w = chokidar.watch(rootDir, {
+  ignored: /node_modules/,
+  persistent: true,
+});
 w.on("ready", () => {
   setTimeout(() => {
     w.on("add", updateFiles);
@@ -70,7 +73,7 @@ if (require("electron-squirrel-startup")) {
 
 const createWindow = () => {
   // Create the browser window.
-  // setMenu();
+  setMenu();
   mainWindow = new BrowserWindow({
     width: settings.size.width + 2,
     height: settings.size.height + 2 + 28,
@@ -90,9 +93,6 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
-
-  mainWindow.setMenu(null)
-  mainWindow.setMenuBarVisibility(false)
 
   const ptyProcess = pty.spawn(shell, [], {
     name: "xterm-color",
